@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const PORT = 8000;
+
 const cors = require('cors');
 const mongose = require('mongoose');
 const app = express();
@@ -14,6 +17,6 @@ mongose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
 app.use(bodyParser.json());
 app.use("/",apiRoutes);
 
-app.listen(8000, () => {
-  console.log('Connect');
+app.listen(PORT, () => {
+  console.log(`Start server on port ${PORT}`);
 });
