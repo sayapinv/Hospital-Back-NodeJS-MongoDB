@@ -11,7 +11,7 @@ const generateAccessToken = (id) => {
 
   const payload = {id:id}
  
-  return jwt.sign(payload,secret,{expiresIn:'24h'})
+  return jwt.sign( payload,secret,{expiresIn:'24h'} )
 }
 
 module.exports.createNewAccount = (req, res)=> {
@@ -38,8 +38,9 @@ module.exports.createNewAccount = (req, res)=> {
         user.save().then(result => {
   
           User.find().then(result => {
-  
-            res.send({ massage: "Аккаунт успешно зарегистрирован" })
+            
+            const token = generateAccessToken(body._id)
+            res.json({token})
   
           })
         })
@@ -49,7 +50,9 @@ module.exports.createNewAccount = (req, res)=> {
     })
 
   }else{
+
     res.send(errors)
+
   }
 
 };
@@ -58,25 +61,41 @@ module.exports.loginAccount = (req, res) => {
 
   const {login,password} = req.body;
 
-  User.findOne({login:login}).then(result =>{
+  const errors = validationResult(req)
 
-    if (result !== null){
-      
-      let validPass = bcrypt.compareSync(password,result.password);
-      if(validPass){
+  if (errors.isEmpty()){
+
+    User.findOne({login:login}).then(result =>{
+
+      if (result !== null){
         
-        const token = generateAccessToken(result._id);
-        res.json({token})
+        let validPass = bcrypt.compareSync(password,result.password);
 
+        if(!validPass){
+
+          res.send({massage: 'не верный пароль'})
+          
+          // const token = generateAccessToken(result._id);
+          // res.json({token})
+          // const decoded = jwt.verify( token,secret )
+          // console.log(decoded)
+  
+        }else{
+  
+          res.send({massage:"true"})
+  
+        }
+        
       }else{
-
-        res.send({massage: 'не верный пароль'})
-
+        res.send({massage: `Пользователь ${login} не найден`})
       }
-      
-    }else{
-      res.send({massage: `Пользователь ${login} не найден`})
-    }
+  
+    })
 
-  })
+  }else{
+    res.send(errors)
+  }
+
+  
+
 }
