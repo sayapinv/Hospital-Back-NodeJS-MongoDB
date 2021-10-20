@@ -8,9 +8,9 @@ const jwt = require('jsonwebtoken');
 const secret = "SECRET_KEY"
 
 const generateAccessToken = (id) => {
-
+  
   const payload = {id:id}
- 
+  
   return jwt.sign( payload,secret,{expiresIn:'24h'} )
 }
 
@@ -23,6 +23,7 @@ module.exports.createNewAccount = (req, res)=> {
   if (errors.isEmpty()){
 
     User.findOne({ login:body.login }).then(result => {
+      
 
       if(result === null){
   
@@ -36,10 +37,13 @@ module.exports.createNewAccount = (req, res)=> {
         });
   
         user.save().then(result => {
-  
+
+          const newObj = result
+
           User.find().then(result => {
+          
+            const token = generateAccessToken(newObj._id)
             
-            const token = generateAccessToken(body._id)
             res.json({token})
   
           })
@@ -71,18 +75,17 @@ module.exports.loginAccount = (req, res) => {
         
         let validPass = bcrypt.compareSync(password,result.password);
 
-        if(!validPass){
+        if(validPass){
 
-          res.send({massage: 'не верный пароль'})
-          
-          // const token = generateAccessToken(result._id);
-          // res.json({token})
-          // const decoded = jwt.verify( token,secret )
-          // console.log(decoded)
+          const token = generateAccessToken(result._id);
+          const decoded = jwt.verify( token,secret )
+          User.findOne({ _id:decoded.id }).then(result => {
+            res.json({token})
+          })
   
         }else{
   
-          res.send({massage:"true"})
+          res.send({massage: 'не верный пароль'})
   
         }
         
@@ -98,4 +101,17 @@ module.exports.loginAccount = (req, res) => {
 
   
 
+}
+
+module.exports.tokenVerification = (req,res) => {
+
+  const token = req.body.token
+  
+  const decoded = jwt.verify( token , secret )
+  
+  if(decoded){
+    User.findOne({ _id:decoded.id }).then(result => {
+      res.send(true)
+    })
+  }
 }
