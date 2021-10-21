@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 const { check } = require("express-validator")
 
-const{ createNewAccount, loginAccount , tokenVerification } = require('../controllers/login.controllers');
+const{ createNewAccount, loginAccount } = require('../controllers/login.controllers');
 
-// const { reseptionScheme } = require('../controllers/reseption.controllers');
+const { createReseption } = require('../controllers/reseption.controllers');
 
 const validation = [
 
@@ -33,9 +33,7 @@ router.post('/createAccount', validation , createNewAccount);
 
 router.post('/loginAccount', validation ,loginAccount)
 
-router.post('/tokenverification', tokenVerification)
-
-// router.post('/receivingAppointments', reseptionScheme)
+router.post('/createreception', createReseption)
 
 
 module.exports = router;

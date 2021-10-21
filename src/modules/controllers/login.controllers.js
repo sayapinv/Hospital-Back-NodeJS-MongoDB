@@ -11,7 +11,7 @@ const generateAccessToken = (id) => {
   
   const payload = {id:id}
   
-  return jwt.sign( payload,secret,{expiresIn:'24h'} )
+  return jwt.sign( payload ,secret , {expiresIn:'24h'} )
 }
 
 module.exports.createNewAccount = (req, res)=> {
@@ -76,12 +76,11 @@ module.exports.loginAccount = (req, res) => {
         let validPass = bcrypt.compareSync(password,result.password);
 
         if(validPass){
-
+          console.log(result)
           const token = generateAccessToken(result._id);
-          const decoded = jwt.verify( token,secret )
-          User.findOne({ _id:decoded.id }).then(result => {
-            res.json({token})
-          })
+          // const decoded = jwt.verify( token,secret )
+          // console.log(decoded)
+          res.json({token})
   
         }else{
   
@@ -103,15 +102,4 @@ module.exports.loginAccount = (req, res) => {
 
 }
 
-module.exports.tokenVerification = (req,res) => {
 
-  const token = req.body.token
-  
-  const decoded = jwt.verify( token , secret )
-  
-  if(decoded){
-    User.findOne({ _id:decoded.id }).then(result => {
-      res.send(true)
-    })
-  }
-}
