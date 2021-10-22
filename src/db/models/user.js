@@ -5,7 +5,8 @@ const { Schema } = mongose;
 const registerScheme = new Schema({
 
   login: String,
-  password: String
+  password: String,
+  number: String
   
 });
 

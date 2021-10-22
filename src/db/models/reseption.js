@@ -7,7 +7,7 @@ const reseptionScheme = new Schema({
     name: String,
     doctor: String,
     date: Date,
-    complaints: String,
+    complaint: String,
     number: String
   
   

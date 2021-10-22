@@ -4,17 +4,24 @@ const bcrypt = require('bcryptjs');
 const {validationResult} = require('express-validator');
 const user = require('../../db/models/user');
 const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
 
 const secret = "SECRET_KEY"
 
-const generateAccessToken = (id) => {
+const generateAccessToken = (generateId) => {
   
-  const payload = {id:id}
+  const payload = {id:generateId}
+
   
   return jwt.sign( payload ,secret , {expiresIn:'24h'} )
 }
 
+
+
+
 module.exports.createNewAccount = (req, res)=> {
+
+  const generateId = uuid.v1()
 
   const errors = validationResult(req)
 
@@ -28,22 +35,21 @@ module.exports.createNewAccount = (req, res)=> {
       if(result === null){
   
         const hashPass = bcryptjs.hashSync(body.password, 7);
-  
+
         const user = new User({
   
           login: body.login,
-          password: hashPass
+          password: hashPass,
+          number: generateId
   
         });
   
         user.save().then(result => {
 
-          const newObj = result
-
           User.find().then(result => {
+
+            const token = generateAccessToken(generateId)
           
-            const token = generateAccessToken(newObj._id)
-            
             res.json({token})
   
           })
@@ -76,10 +82,9 @@ module.exports.loginAccount = (req, res) => {
         let validPass = bcrypt.compareSync(password,result.password);
 
         if(validPass){
-          console.log(result)
-          const token = generateAccessToken(result._id);
-          // const decoded = jwt.verify( token,secret )
-          // console.log(decoded)
+          
+          const token = generateAccessToken(result.number);
+
           res.json({token})
   
         }else{

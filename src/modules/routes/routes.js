@@ -5,7 +5,7 @@ const { check } = require("express-validator")
 
 const{ createNewAccount, loginAccount } = require('../controllers/login.controllers');
 
-const { createReseption } = require('../controllers/reseption.controllers');
+const { createReseption,getReceptions } = require('../controllers/reseption.controllers');
 
 const validation = [
 
@@ -34,6 +34,8 @@ router.post('/createAccount', validation , createNewAccount);
 router.post('/loginAccount', validation ,loginAccount)
 
 router.post('/createreception', createReseption)
+
+router.get('/getreceptions' , getReceptions)
 
 
 module.exports = router;
