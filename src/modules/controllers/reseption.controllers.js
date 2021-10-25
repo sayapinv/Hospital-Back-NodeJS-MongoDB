@@ -6,7 +6,7 @@ const secret = "SECRET_KEY"
 
 module.exports.createReseption = (req,res) => {
 
-    const id = jwt.verify( req.body.token , secret )
+    const decoded = jwt.verify( req.body.token , secret )
     
     const reception = new Reception({
   
@@ -14,7 +14,7 @@ module.exports.createReseption = (req,res) => {
         doctor: req.body.doctor,
         date: req.body.date,
         complaint: req.body.complaint,
-        number: id.id
+        number: decoded.id
 
     });
 
@@ -22,8 +22,10 @@ module.exports.createReseption = (req,res) => {
 
         
         Reception.find().then(result => {
-            res.send({data: result});
-          });
+
+            res.send({data: ReceptionGetFilter(result,decoded.id)});
+
+        });
 
     })
 
@@ -31,10 +33,39 @@ module.exports.createReseption = (req,res) => {
 
 module.exports.getReceptions = (req,res) => {
 
+    const token = req.query.token
+
+    const decoded = jwt.verify( token, secret );
+    
     Reception.find().then(result => {
         
-        res.send({data: result});
+        res.send({data:ReceptionGetFilter(result,decoded.id)})
+        
+
       });
 
 }
+
+const ReceptionGetFilter = (arr,dec) => {//фильтр по id
+    const newArr = []
+    arr.forEach(element => {
+        if(element.number === dec){
+            newArr.push(element)
+        }
+    });
+    return newArr;
+}
+
+module.exports.deleteReception = (req,res) => {
+
+    Reception.deleteOne({ _id:req.query.id }).then(result => {
+        console.log(result)
+    })
+}
+
+// Task.deleteOne({_id: req.query.id}).then(result => {
+//     Task.find().then(result => {
+//       res.send({data: result});
+//     });
+//   });
 
