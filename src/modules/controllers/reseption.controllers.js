@@ -21,9 +21,9 @@ module.exports.createReseption = (req,res) => {
     reception.save().then(result => {
 
         
-        Reception.find().then(result => {
+        Reception.find({number:decoded.id}).then(result => {
 
-            res.send({data: ReceptionGetFilter(result,decoded.id)});
+            res.send({data: result});
 
         });
 
@@ -37,35 +37,34 @@ module.exports.getReceptions = (req,res) => {
 
     const decoded = jwt.verify( token, secret );
     
-    Reception.find().then(result => {
+    Reception.find({number:decoded.id}).then(result => {
         
-        res.send({data:ReceptionGetFilter(result,decoded.id)})
-        
-
+        res.send({data:result})
+    
       });
 
-}
-
-const ReceptionGetFilter = (arr,dec) => {//фильтр по id
-    const newArr = []
-    arr.forEach(element => {
-        if(element.number === dec){
-            newArr.push(element)
-        }
-    });
-    return newArr;
 }
 
 module.exports.deleteReception = (req,res) => {
 
     Reception.deleteOne({ _id:req.query.id }).then(result => {
-        console.log(result)
+        Reception.find({number:req.query.number}).then(result =>{
+            res.send({data: result});
+        })
     })
 }
 
-// Task.deleteOne({_id: req.query.id}).then(result => {
-//     Task.find().then(result => {
-//       res.send({data: result});
-//     });
-//   });
+module.exports.updateReception = (req,res) => {
+    console.log(req.body)
+    Reception.updateOne({_id: req.body.id}, req.body).then(result =>{
+        
+        Reception.find({number:req.body.number}).then(result =>{
+            
+             res.send({data: result});
+
+        })
+
+    })
+}
+
 

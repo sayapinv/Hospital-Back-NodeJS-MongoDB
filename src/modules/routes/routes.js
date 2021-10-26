@@ -5,7 +5,7 @@ const { check } = require("express-validator")
 
 const{ createNewAccount, loginAccount } = require('../controllers/login.controllers');
 
-const { createReseption,getReceptions,deleteReception } = require('../controllers/reseption.controllers');
+const { createReseption,getReceptions,deleteReception,updateReception } = require('../controllers/reseption.controllers');
 
 const validation = [
 
@@ -39,5 +39,6 @@ router.get('/getreceptions' , getReceptions)
 
 router.delete('/deleteReception' , deleteReception)
 
+router.patch('/updateReception', updateReception )
 
 module.exports = router;
