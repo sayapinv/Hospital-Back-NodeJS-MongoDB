@@ -14,3 +14,4 @@ const reseptionScheme = new Schema({
 });
 
 module.exports = Reception = mongose.model('reception', reseptionScheme);
+
