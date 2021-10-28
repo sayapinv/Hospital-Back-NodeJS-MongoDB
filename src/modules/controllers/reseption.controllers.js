@@ -6,11 +6,19 @@ const secret = "SECRET_KEY"
 
 module.exports.createReseption = (req,res) => {
 
+    function ucFirst(str) {
+        if (!str) return str;
+      
+        return str[0].toUpperCase() + str.slice(1);
+    }
+
     const decoded = jwt.verify( req.body.token , secret )
+
+    
     
     const reception = new Reception({
   
-        name: req.body.name,
+        name: ucFirst(req.body.name),
         doctor: req.body.doctor,
         date: req.body.date,
         complaint: req.body.complaint,
