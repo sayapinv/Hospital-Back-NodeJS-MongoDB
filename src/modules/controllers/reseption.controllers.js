@@ -6,7 +6,7 @@ const secret = "SECRET_KEY"
 
 module.exports.createReseption = (req,res) => {
 
-    function ucFirst(str) {
+    const ucFirst = (str) => {
         if (!str) return str;
       
         return str[0].toUpperCase() + str.slice(1);
@@ -14,8 +14,6 @@ module.exports.createReseption = (req,res) => {
 
     const decoded = jwt.verify( req.body.token , secret )
 
-    
-    
     const reception = new Reception({
   
         name: ucFirst(req.body.name),
@@ -27,8 +25,6 @@ module.exports.createReseption = (req,res) => {
     });
 
     reception.save().then(result => {
-
-        
         Reception.find({number:decoded.id}).then(result => {
 
             res.send({data: result});
@@ -63,7 +59,7 @@ module.exports.deleteReception = (req,res) => {
 }
 
 module.exports.updateReception = (req,res) => {
-    console.log(req.body)
+
     Reception.updateOne({_id: req.body.id}, req.body).then(result =>{
         
         Reception.find({number:req.body.number}).then(result =>{
