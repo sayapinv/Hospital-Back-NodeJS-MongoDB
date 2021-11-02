@@ -1,22 +1,14 @@
 const Reception = require('../../db/models/reseption');
-const User = require('../../db/models/user');
 const jwt = require('jsonwebtoken');
-
-const secret = "SECRET_KEY"
+const {secret} = require('../../config.js')
 
 module.exports.createReseption = (req,res) => {
-
-    const ucFirst = (str) => {
-        if (!str) return str;
-      
-        return str[0].toUpperCase() + str.slice(1);
-    }
 
     const decoded = jwt.verify( req.body.token , secret )
 
     const reception = new Reception({
   
-        name: ucFirst(req.body.name),
+        name: req.body.name,
         doctor: req.body.doctor,
         date: req.body.date,
         complaint: req.body.complaint,

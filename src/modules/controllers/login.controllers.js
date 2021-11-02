@@ -2,11 +2,11 @@ const User = require('../../db/models/user');
 const bcryptjs = require('bcryptjs')
 const bcrypt = require('bcryptjs');
 const {validationResult} = require('express-validator');
-const user = require('../../db/models/user');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid');
+const {secret} = require('../../config.js')
 
-const secret = "SECRET_KEY"
+
 
 const generateAccessToken = (generateId) => {
   

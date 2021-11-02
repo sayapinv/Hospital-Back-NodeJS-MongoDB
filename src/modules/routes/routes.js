@@ -16,6 +16,7 @@ const validation = [
         .withMessage('Поле не может быть пустым')
         .isLength({ min:6, max:30 })
         .withMessage('Поле логина должно быть не менее 6 символов и не более 30'),
+
     check('password')
         .isAlphanumeric(['en-US'])
         .withMessage('Поле пароль должно состоять только из латинских букв и цифр')
