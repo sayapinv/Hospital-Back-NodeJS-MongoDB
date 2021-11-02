@@ -1,13 +1,11 @@
 const Reception = require('../../db/models/reseption');
-const User = require('../../db/models/user');
 const jwt = require('jsonwebtoken');
-
-const secret = "SECRET_KEY"
+const {secret} = require('../../config.js')
 
 module.exports.createReseption = (req,res) => {
 
     const decoded = jwt.verify( req.body.token , secret )
-    
+
     const reception = new Reception({
   
         name: req.body.name,
@@ -19,8 +17,6 @@ module.exports.createReseption = (req,res) => {
     });
 
     reception.save().then(result => {
-
-        
         Reception.find({number:decoded.id}).then(result => {
 
             res.send({data: result});
@@ -55,7 +51,7 @@ module.exports.deleteReception = (req,res) => {
 }
 
 module.exports.updateReception = (req,res) => {
-    console.log(req.body)
+
     Reception.updateOne({_id: req.body.id}, req.body).then(result =>{
         
         Reception.find({number:req.body.number}).then(result =>{
